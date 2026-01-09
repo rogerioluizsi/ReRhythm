@@ -1,0 +1,182 @@
+[
+{
+"id": 1,
+"name": "The Auditory Breach",
+"category": "0–60 seconds (immediate)",
+"estimated_time": "15s",
+"stress_range": {
+"min": 8,
+"max": 10
+},
+"trigger_case": "Sensory exclusion (deafness) during chaotic code/resuscitation",
+"steps": [
+"Physically stop moving for 1 second.",
+"Close eyes tightly to cut visual input.",
+"Take one sharp, audible breath and loudly state the next priority.",
+"Open eyes."
+],
+"target_outcome": "Breaks sensory overload loop and restores auditory processing."
+},
+{
+"id": 2,
+"name": "Tactical Grip Reset",
+"category": "0–60 seconds (immediate)",
+"estimated_time": "10s",
+"stress_range": {
+"min": 6,
+"max": 9
+},
+"trigger_case": "Fine motor tremors (shaking hands) before precision procedure (IV/Cric)",
+"steps": [
+"Drop hands to sides to lower gravity resistance.",
+"Clench fists as hard as possible for 3 seconds.",
+"Explosively release tension and shake wrists out once.",
+"Proceed immediately to task."
+],
+"target_outcome": "Discharges accumulated muscular tension and reduces tremors."
+},
+{
+"id": 3,
+"name": "The Identity Anchor",
+"category": "0–60 seconds (immediate)",
+"estimated_time": "20s",
+"stress_range": {
+"min": 7,
+"max": 10
+},
+"trigger_case": "Freeze response or dissociation upon entering a mass casualty scene",
+"steps": [
+"Touch a physical object (doorframe, gurney) to ground sensation.",
+"State internally: 'I am [Name], I am a [Role].'",
+"Identify exactly one patient to approach first.",
+"Move feet immediately."
+],
+"target_outcome": "Overcomes paralysis by reinforcing professional identity and simplifying the goal."
+},
+{
+"id": 4,
+"name": "The Cold Water Ritual",
+"category": "2–3 minutes (post-event)",
+"estimated_time": "2 min",
+"stress_range": {
+"min": 5,
+"max": 8
+},
+"trigger_case": "Transitioning from a failed pediatric resuscitation to a new patient",
+"steps": [
+"Go to sink and turn on cold water.",
+"Wash hands slowly, visualizing the traumatic event turning into grey water.",
+"Watch the water drain completely.",
+"Dry hands thoroughly; the event is now 'closed'."
+],
+"target_outcome": "Creates a psychological boundary between patients to prevent emotional bleed-over."
+},
+{
+"id": 5,
+"name": "The Glass Partition",
+"category": "2–3 minutes (post-event)",
+"estimated_time": "2 min",
+"stress_range": {
+"min": 6,
+"max": 9
+},
+"trigger_case": "Overwhelming empathy/sorrow interacting with grieving family",
+"steps": [
+"Visualize a thick, soundproof glass wall between you and the family.",
+"Acknowledge their pain is visible, but it cannot physically touch you.",
+"Repeat internally: 'This is their tragedy, not mine.'",
+"Offer care through the 'window' without stepping through it."
+],
+"target_outcome": "Maintains empathy while preventing compassion fatigue and emotional contagion."
+},
+{
+"id": 6,
+"name": "The Physiological Dump",
+"category": "2–3 minutes (post-event)",
+"estimated_time": "3 min",
+"stress_range": {
+"min": 4,
+"max": 7
+},
+"trigger_case": "Adrenaline crash/shaking after a violent patient restraint",
+"steps": [
+"Find a private space (supply closet/stairwell).",
+"Perform 10 rapid air squats or wall push-ups.",
+"Drink a cup of cold water in one go.",
+"Do one long exhale (8 seconds)."
+],
+"target_outcome": "Metabolizes excess circulating catecholamines (adrenaline) to normalize heart rate."
+},
+{
+"id": 7,
+"name": "The 'Silence & Slot' Debrief",
+"category": "3–5 minutes (team/conflict)",
+"estimated_time": "4 min",
+"stress_range": {
+"min": 5,
+"max": 9
+},
+"trigger_case": "Team arguing/blaming immediately after a high-stress code",
+"steps": [
+"Leader commands 30 seconds of absolute silence.",
+"Round robin: Each member states one fact (no opinions) about what happened.",
+"Each member states one thing to 'fix' for next time.",
+"Leader closes the loop: 'We move on.'"
+],
+"target_outcome": "Diffuses immediate emotional reactivity and switches brain to analytical mode."
+},
+{
+"id": 8,
+"name": "The Data Translation Protocol",
+"category": "3–5 minutes (team/conflict)",
+"estimated_time": "3 min",
+"stress_range": {
+"min": 4,
+"max": 8
+},
+"trigger_case": "Perceived incompetence of a colleague causing anger",
+"steps": [
+"Identify the specific emotion (e.g., 'I am furious').",
+"Identify the operational impact causing the fear (e.g., 'Patient safety is at risk').",
+"Formulate a neutral question: 'Can you clarify your plan for X?'",
+"Ask the question without sarcasm."
+],
+"target_outcome": "Converts subjective anger into objective clinical communication."
+},
+{
+"id": 9,
+"name": "The 'Worst-Case' Containment",
+"category": "3–5 minutes (team/conflict)",
+"estimated_time": "5 min",
+"stress_range": {
+"min": 6,
+"max": 9
+},
+"trigger_case": "Paralyzing anxiety about a potential future error or lawsuit",
+"steps": [
+"Write down the absolute worst-case scenario.",
+"Write down one piece of evidence that this has NOT happened yet.",
+"Write down one concrete action to prevent it right now.",
+"Tear up the paper (symbolic release)."
+],
+"target_outcome": "Stops catastrophic rumination loops by externalizing and addressing the fear."
+},
+{
+"id": 10,
+"name": "The Role-Reversal Audit",
+"category": "3–5 minutes (team/conflict)",
+"estimated_time": "5 min",
+"stress_range": {
+"min": 3,
+"max": 7
+},
+"trigger_case": "Interpersonal conflict with a supervisor regarding resource allocation",
+"steps": [
+"Physically stand in a different spot in the room.",
+"Argue the supervisor's position aloud for 60 seconds as if it were your own.",
+"Identify one valid constraint they are facing.",
+"Propose a solution that solves YOUR problem and helps THEIR constraint."
+],
+"target_outcome": "Breaks deadlock by forcing cognitive empathy and finding mutual wins."
+}
+]
