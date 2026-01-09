@@ -1,0 +1,28 @@
+{
+  "userId": "user_001",
+  "timestamp": "2026-01-08T22:55:00Z",
+  "checkInType": "stress_assessment",
+  "data": {
+    "stressLevel": {
+      "value": 5,
+      "scaleMax": 10,
+      "label": "Elevated"
+    },
+    "currentCapacity": {
+      "value": 5,
+      "scaleMax": 10,
+      "label": "Moderate"
+    },
+    "sleepDebt": {
+      "value": 3,
+      "scaleMax": 10,
+      "label": "Slight debt"
+    },
+    "illnessSymptoms": {
+      "value": 0,
+      "scaleMax": 10,
+      "label": "None"
+    },
+    "userNotes": "Feeling a bit rushed due to upcoming deadlines, but managing okay."
+  }
+}

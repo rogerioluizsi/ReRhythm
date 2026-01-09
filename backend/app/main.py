@@ -1,0 +1,46 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.database import engine, Base
+from app.routers import auth, llm, wearable, journaling, counseling, library
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
+
+# Initialize FastAPI app
+app = FastAPI(
+    title="Dora Project API",
+    description="Backend API for the Dora mental health intervention app",
+    version="1.0.0"
+)
+
+# Configure CORS
+origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include routers
+app.include_router(auth.router)
+app.include_router(llm.router)
+app.include_router(wearable.router)
+app.include_router(journaling.router)
+app.include_router(counseling.router)
+app.include_router(library.router)
+
+
+@app.get("/")
+def root():
+    return {"message": "Dora Project API is running"}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
