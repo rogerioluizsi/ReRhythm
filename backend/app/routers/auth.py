@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
-from app.schemas import LoginRequest, LoginResponse, AccountWipeRequest, AccountWipeResponse
+from app.schemas import LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, AccountWipeRequest, AccountWipeResponse
 from app.utils.auth import verify_password, get_password_hash, create_access_token
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
@@ -16,19 +16,8 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
     """
     # Case 1: Anonymous login (no email or password)
     if not request.email and not request.password:
-        # Check if device_id already exists
-        existing_user = db.query(User).filter(User.device_id == request.device_id).first()
-        
-        if existing_user:
-            # Return existing anonymous user
-            token = create_access_token(data={"sub": str(existing_user.id), "device_id": request.device_id})
-            return LoginResponse(
-                token=token,
-                user_id=existing_user.id,
-                is_anonymous=existing_user.is_anonymous
-            )
-        
-        # Create new anonymous user
+        # Always create a new anonymous user with ephemeral device_id
+        # Each anonymous session is unique to prevent data leakage
         new_user = User(
             device_id=request.device_id,
             is_anonymous=True
@@ -65,6 +54,45 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
         token=token,
         user_id=user.id,
         is_anonymous=user.is_anonymous
+    )
+
+
+@router.post("/register", response_model=RegisterResponse)
+def register(request: RegisterRequest, db: Session = Depends(get_db)):
+    """
+    Creates a new user account with email and password.
+    """
+    # Validate that passwords match
+    if request.password != request.repeat_password:
+        raise HTTPException(status_code=400, detail="Passwords do not match")
+    
+    # Validate password strength (minimum 6 characters)
+    if len(request.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters long")
+    
+    # Check if email already exists
+    existing_user = db.query(User).filter(User.email == request.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Create new user
+    new_user = User(
+        device_id=request.device_id,
+        email=request.email,
+        hashed_password=get_password_hash(request.password),
+        is_anonymous=False
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    # Create token
+    token = create_access_token(data={"sub": str(new_user.id), "device_id": request.device_id})
+    
+    return RegisterResponse(
+        token=token,
+        user_id=new_user.id,
+        is_anonymous=False
     )
 
 

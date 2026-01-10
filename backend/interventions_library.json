@@ -1,117 +1,15 @@
 [
 {
 "id": 1,
-"name": "The Auditory Breach",
-"category": "0–60 seconds (immediate)",
-"estimated_time": "15s",
-"stress_range": {
-"min": 8,
-"max": 10
-},
-"trigger_case": "Sensory exclusion (deafness) during chaotic code/resuscitation",
-"steps": [
-"Physically stop moving for 1 second.",
-"Close eyes tightly to cut visual input.",
-"Take one sharp, audible breath and loudly state the next priority.",
-"Open eyes."
-],
-"target_outcome": "Breaks sensory overload loop and restores auditory processing."
-},
-{
-"id": 2,
-"name": "Tactical Grip Reset",
-"category": "0–60 seconds (immediate)",
-"estimated_time": "10s",
-"stress_range": {
-"min": 6,
-"max": 9
-},
-"trigger_case": "Fine motor tremors (shaking hands) before precision procedure (IV/Cric)",
-"steps": [
-"Drop hands to sides to lower gravity resistance.",
-"Clench fists as hard as possible for 3 seconds.",
-"Explosively release tension and shake wrists out once.",
-"Proceed immediately to task."
-],
-"target_outcome": "Discharges accumulated muscular tension and reduces tremors."
-},
-{
-"id": 3,
-"name": "The Identity Anchor",
-"category": "0–60 seconds (immediate)",
-"estimated_time": "20s",
-"stress_range": {
-"min": 7,
-"max": 10
-},
-"trigger_case": "Freeze response or dissociation upon entering a mass casualty scene",
-"steps": [
-"Touch a physical object (doorframe, gurney) to ground sensation.",
-"State internally: 'I am [Name], I am a [Role].'",
-"Identify exactly one patient to approach first.",
-"Move feet immediately."
-],
-"target_outcome": "Overcomes paralysis by reinforcing professional identity and simplifying the goal."
-},
-{
-"id": 4,
-"name": "The Cold Water Ritual",
-"category": "2–3 minutes (post-event)",
-"estimated_time": "2 min",
-"stress_range": {
-"min": 5,
-"max": 8
-},
-"trigger_case": "Transitioning from a failed pediatric resuscitation to a new patient",
-"steps": [
-"Go to sink and turn on cold water.",
-"Wash hands slowly, visualizing the traumatic event turning into grey water.",
-"Watch the water drain completely.",
-"Dry hands thoroughly; the event is now 'closed'."
-],
-"target_outcome": "Creates a psychological boundary between patients to prevent emotional bleed-over."
-},
-{
-"id": 5,
-"name": "The Glass Partition",
-"category": "2–3 minutes (post-event)",
-"estimated_time": "2 min",
-"stress_range": {
-"min": 6,
-"max": 9
-},
-"trigger_case": "Overwhelming empathy/sorrow interacting with grieving family",
-"steps": [
-"Visualize a thick, soundproof glass wall between you and the family.",
-"Acknowledge their pain is visible, but it cannot physically touch you.",
-"Repeat internally: 'This is their tragedy, not mine.'",
-"Offer care through the 'window' without stepping through it."
-],
-"target_outcome": "Maintains empathy while preventing compassion fatigue and emotional contagion."
-},
-{
-"id": 6,
-"name": "The Physiological Dump",
-"category": "2–3 minutes (post-event)",
-"estimated_time": "3 min",
-"stress_range": {
-"min": 4,
-"max": 7
-},
-"trigger_case": "Adrenaline crash/shaking after a violent patient restraint",
-"steps": [
-"Find a private space (supply closet/stairwell).",
-"Perform 10 rapid air squats or wall push-ups.",
-"Drink a cup of cold water in one go.",
-"Do one long exhale (8 seconds)."
-],
-"target_outcome": "Metabolizes excess circulating catecholamines (adrenaline) to normalize heart rate."
-},
-{
-"id": 7,
 "name": "The 'Silence & Slot' Debrief",
-"category": "3–5 minutes (team/conflict)",
-"estimated_time": "4 min",
+"duration_min": 4,
+"context": "conflict",
+"modality": "group",
+"goal_tags": [
+"communication",
+"de-escalation",
+"cognitive-shift"
+],
 "stress_range": {
 "min": 5,
 "max": 9
@@ -126,57 +24,674 @@
 "target_outcome": "Diffuses immediate emotional reactivity and switches brain to analytical mode."
 },
 {
+"id": 2,
+"name": "Post-Code Blue Grounding",
+"duration_min": 2,
+"context": "trauma",
+"modality": "somatic",
+"goal_tags": [
+"regulation",
+"physiological-reset"
+],
+"stress_range": {
+"min": 8,
+"max": 10
+},
+"trigger_case": "Failed resuscitation attempt leading to immediate adrenaline crash",
+"steps": [
+"Step away from the patient bedside to a wall or corner.",
+"Press palms firmly against the wall, engaging triceps and pectorals.",
+"Push hard for a count of 10 while exhaling audibly.",
+"Release tension suddenly and shake hands out."
+],
+"target_outcome": "Metabolizes excess adrenaline to prevent trembling and restore fine motor control."
+},
+{
+"id": 3,
+"name": "The 'Parking Lot' Ritual",
+"duration_min": 5,
+"context": "fatigue",
+"modality": "cognitive",
+"goal_tags": [
+"boundary-setting",
+"transition"
+],
+"stress_range": {
+"min": 3,
+"max": 6
+},
+"trigger_case": "End of a 12+ hour shift preventing mental transition to home life",
+"steps": [
+"Sit in car (or transport seat) without turning on the engine/music.",
+"Visualize the hospital building in the rearview mirror.",
+"Mentally pack 'patient worries' into a virtual box.",
+"Visualize leaving the box on the curb outside the hospital.",
+"Start engine/music to signal the start of 'personal time'."
+],
+"target_outcome": "Creates a psychological boundary between clinician role and personal identity."
+},
+{
+"id": 4,
+"name": "Surgical Scrub Visualization",
+"duration_min": 3,
+"context": "anxiety",
+"modality": "visualization",
+"goal_tags": [
+"focus",
+"preparation"
+],
+"stress_range": {
+"min": 4,
+"max": 7
+},
+"trigger_case": "Pre-operative anxiety before a high-risk or complex procedure",
+"steps": [
+"While scrubbing hands, imagine the water is washing away 'distraction'.",
+"Visualize the procedure going perfectly step-by-step.",
+"Associate the smell of the soap with 'competence' and 'clarity'.",
+"Enter the OR threshold with a specific affirmation: 'I am ready.'"
+],
+"target_outcome": "Anchors a routine physical habit to a mental state of high-performance flow."
+},
+{
+"id": 5,
+"name": "Breaking Bad News Prep",
+"duration_min": 1,
+"context": "anxiety",
+"modality": "breathing",
+"goal_tags": [
+"compassion",
+"emotional-regulation"
+],
+"stress_range": {
+"min": 6,
+"max": 8
+},
+"trigger_case": "Moments before entering a room to inform family of a patient's death",
+"steps": [
+"Pause at the door handle. Do not open yet.",
+"Inhale deeply for 4 seconds, expanding the diaphragm.",
+"Hold for 4 seconds, acknowledging your own discomfort.",
+"Exhale for 4 seconds, releasing the need to 'fix' the grief.",
+"Enter the room."
+],
+"target_outcome": "Lowers provider's heart rate to allow for a calm, empathetic presence."
+},
+{
+"id": 6,
+"name": "The 'Not My Emergency' Mantra",
+"duration_min": 1,
+"context": "anxiety",
+"modality": "cognitive",
+"goal_tags": [
+"detachment",
+"clarity"
+],
+"stress_range": {
+"min": 7,
+"max": 9
+},
+"trigger_case": "Overwhelmed by a patient's panic or aggressive family member",
+"steps": [
+"Physically take one step back.",
+"Internal monologue: 'This is their emergency, not mine.'",
+"Internal monologue: 'I am the calm within their chaos.'",
+"Re-engage with lowered voice volume."
+],
+"target_outcome": "Prevents emotional contagion and maintains professional objectiveness."
+},
+{
+"id": 7,
+"name": "Needle Stick Fear Protocol",
+"duration_min": 2,
+"context": "trauma",
+"modality": "CBT",
+"goal_tags": [
+"fear-extinction",
+"safety"
+],
+"stress_range": {
+"min": 5,
+"max": 9
+},
+"trigger_case": "Anxiety when performing a procedure after a previous needle stick injury",
+"steps": [
+"Acknowledge the fear: 'I am remembering a past event.'",
+"Reality check: 'I am following safety protocols right now.'",
+"Visualize the safety mechanism engaging successfully.",
+"Proceed with the task focusing solely on the equipment, not the skin."
+],
+"target_outcome": "disrupts the trauma loop to allow safe completion of the task."
+},
+{
 "id": 8,
-"name": "The Data Translation Protocol",
-"category": "3–5 minutes (team/conflict)",
-"estimated_time": "3 min",
+"name": "The 'Glass Wall' Technique",
+"duration_min": 1,
+"context": "conflict",
+"modality": "visualization",
+"goal_tags": [
+"protection",
+"resilience"
+],
 "stress_range": {
 "min": 4,
 "max": 8
 },
-"trigger_case": "Perceived incompetence of a colleague causing anger",
+"trigger_case": "Verbal abuse from an intoxicated or delirious patient",
 "steps": [
-"Identify the specific emotion (e.g., 'I am furious').",
-"Identify the operational impact causing the fear (e.g., 'Patient safety is at risk').",
-"Formulate a neutral question: 'Can you clarify your plan for X?'",
-"Ask the question without sarcasm."
+"Imagine a thick, soundproof glass wall between you and the patient.",
+"Visualize their words hitting the glass and sliding down harmlessly.",
+"Observe their mouth moving like a silent movie.",
+"Focus only on clinical signs (pupils, skin color) rather than words."
 ],
-"target_outcome": "Converts subjective anger into objective clinical communication."
+"target_outcome": "Prevents personalization of abuse and maintains clinical focus."
 },
 {
 "id": 9,
-"name": "The 'Worst-Case' Containment",
-"category": "3–5 minutes (team/conflict)",
-"estimated_time": "5 min",
+"name": "Triage Overload Breathing",
+"duration_min": 1,
+"context": "fatigue",
+"modality": "breathing",
+"goal_tags": [
+"pacing",
+"endurance"
+],
 "stress_range": {
 "min": 6,
-"max": 9
+"max": 8
 },
-"trigger_case": "Paralyzing anxiety about a potential future error or lawsuit",
+"trigger_case": "Waiting room is full, ambulances arriving, feeling paralyzed by volume",
 "steps": [
-"Write down the absolute worst-case scenario.",
-"Write down one piece of evidence that this has NOT happened yet.",
-"Write down one concrete action to prevent it right now.",
-"Tear up the paper (symbolic release)."
+"Stop moving for 10 seconds.",
+"Box breathing: Inhale 4, Hold 4, Exhale 4, Hold 4.",
+"Pick ONE patient to assess next.",
+"Ignore the rest of the room until that one assessment is done."
 ],
-"target_outcome": "Stops catastrophic rumination loops by externalizing and addressing the fear."
+"target_outcome": "Breaks the paralysis of 'too many tasks' by forcing singular focus."
 },
 {
 "id": 10,
-"name": "The Role-Reversal Audit",
-"category": "3–5 minutes (team/conflict)",
-"estimated_time": "5 min",
+"name": "The 'Good Death' Acknowledgement",
+"duration_min": 3,
+"context": "grief",
+"modality": "group",
+"goal_tags": [
+"closure",
+"meaning"
+],
 "stress_range": {
-"min": 3,
+"min": 4,
 "max": 7
 },
-"trigger_case": "Interpersonal conflict with a supervisor regarding resource allocation",
+"trigger_case": "Patient death in palliative care or ICU after long treatment",
 "steps": [
-"Physically stand in a different spot in the room.",
-"Argue the supervisor's position aloud for 60 seconds as if it were your own.",
-"Identify one valid constraint they are facing.",
-"Propose a solution that solves YOUR problem and helps THEIR constraint."
+"Team pauses at bedside after family leaves.",
+"One person names the patient.",
+"One person states a comfort measure that was successfully provided.",
+"Moment of silence to honor the care given, not just the outcome."
 ],
-"target_outcome": "Breaks deadlock by forcing cognitive empathy and finding mutual wins."
+"target_outcome": "Reframes death as a part of care rather than a medical failure."
+},
+{
+"id": 11,
+"name": "Rapid Response Adrenaline Dump",
+"duration_min": 2,
+"context": "anxiety",
+"modality": "physical",
+"goal_tags": [
+"release",
+"energy"
+],
+"stress_range": {
+"min": 7,
+"max": 9
+},
+"trigger_case": "Shaking hands or racing heart after a Rapid Response call",
+"steps": [
+"Find a stairwell or empty corridor.",
+"Perform 10 rapid squats or calf raises.",
+"Run hands under cold water for 30 seconds.",
+"Drink a full cup of water slowly."
+],
+"target_outcome": "Burns off acute stress hormones to return to baseline vitals."
+},
+{
+"id": 12,
+"name": "Imposter Syndrome Check",
+"duration_min": 5,
+"context": "anxiety",
+"modality": "journaling",
+"goal_tags": [
+"confidence",
+"self-compassion"
+],
+"stress_range": {
+"min": 3,
+"max": 6
+},
+"trigger_case": "Resident or new nurse feeling incompetent after a difficult diagnosis",
+"steps": [
+"Write down the specific mistake or knowledge gap.",
+"Write down three things you did CORRECTLY in the same interaction.",
+"Identify one resource to consult (senior, textbook) to fill the gap.",
+"Destroy the note."
+],
+"target_outcome": "Balances negative bias with evidence of competence."
+},
+{
+"id": 13,
+"name": "Sensory Grounding (5-4-3-2-1)",
+"duration_min": 2,
+"context": "trauma",
+"modality": "sensory",
+"goal_tags": [
+"grounding",
+"panic-reduction"
+],
+"stress_range": {
+"min": 8,
+"max": 10
+},
+"trigger_case": "Panic attack onset in a supply closet or break room",
+"steps": [
+"Name 5 things you see (e.g., gauze, monitor).",
+"Name 4 things you can feel (e.g., scrubs, cold desk).",
+"Name 3 things you hear (e.g., beeping, HVAC).",
+"Name 2 things you smell (e.g., antiseptic, coffee).",
+"Name 1 thing you can taste."
+],
+"target_outcome": "Pulls the brain out of emotional hijacking back to present reality."
+},
+{
+"id": 14,
+"name": "The 'Chart & Release' Method",
+"duration_min": 1,
+"context": "fatigue",
+"modality": "cognitive",
+"goal_tags": [
+"closure",
+"compartmentalization"
+],
+"stress_range": {
+"min": 2,
+"max": 5
+},
+"trigger_case": "Constant rumination about a patient after their discharge",
+"steps": [
+"Complete the documentation fully.",
+"As you click 'Sign/Submit', physically exhale.",
+"Say mentally: 'The data is safe. My responsibility for this chapter is done.'",
+"Close the tab/window immediately."
+],
+"target_outcome": "Uses the digital workflow as a psychological signal for task completion."
+},
+{
+"id": 15,
+"name": "Night Shift '3 AM Wall' Buster",
+"duration_min": 5,
+"context": "fatigue",
+"modality": "physical",
+"goal_tags": [
+"alertness",
+"circadian-rhythm"
+],
+"stress_range": {
+"min": 4,
+"max": 6
+},
+"trigger_case": "Severe drowsiness and cognitive slowing during night shift",
+"steps": [
+"Stand up and move to the brightest light source available.",
+"Stretch arms overhead to expand rib cage.",
+"Engage in social conversation (non-medical) for 2 minutes with a peer.",
+"Consume cool water (avoid sugar crash)."
+],
+"target_outcome": "Stimulates the reticular activating system to combat sleep pressure."
+},
+{
+"id": 16,
+"name": "Moral Injury Mapping",
+"duration_min": 10,
+"context": "trauma",
+"modality": "reflective",
+"goal_tags": [
+"values",
+"acceptance"
+],
+"stress_range": {
+"min": 5,
+"max": 8
+},
+"trigger_case": "Forced to provide substandard care due to resource lack (e.g., no beds)",
+"steps": [
+"Identify the specific value violated (e.g., 'I want to help everyone').",
+"Identify the external constraint (e.g., 'There are no beds').",
+"Acknowledge the gap is 'systemic' not 'personal failure'.",
+"Affirm: 'I did the best possible within the reality provided.'"
+],
+"target_outcome": "Reduces guilt by externalizing systemic failures."
+},
+{
+"id": 17,
+"name": "IV Failure Reset",
+"duration_min": 1,
+"context": "anxiety",
+"modality": "reframing",
+"goal_tags": [
+"patience",
+"resilience"
+],
+"stress_range": {
+"min": 3,
+"max": 6
+},
+"trigger_case": "Missing a difficult IV line twice, feeling judged by patient/peers",
+"steps": [
+"Step away. Do not attempt a third time immediately.",
+"Admit the difficulty neutraly: 'Those veins are fragile/rolling.'",
+"Ask a colleague to try, framing it as 'fresh eyes' not 'incompetence'.",
+"Assist the colleague to maintain team utility."
+],
+"target_outcome": "Prevents the 'choking' phenomenon caused by performance anxiety."
+},
+{
+"id": 18,
+"name": "The 'Door Frame' Trigger",
+"duration_min": 0,
+"context": "fatigue",
+"modality": "mindfulness",
+"goal_tags": [
+"presence",
+"reset"
+],
+"stress_range": {
+"min": 2,
+"max": 5
+},
+"trigger_case": "Moving between patients with vastly different needs (e.g., happy discharge to serious diagnosis)",
+"steps": [
+"Designate the door frame of the patient room as a 'reset point'.",
+"As you cross the threshold, drop the emotion from the previous room.",
+"Assume the persona needed for the NEW room (e.g., 'Cheerleader' or 'Listener')."
+],
+"target_outcome": "Micro-segmentation of emotional labor to match patient needs."
+},
+{
+"id": 19,
+"name": "Post-Intubation Shakeout",
+"duration_min": 1,
+"context": "anxiety",
+"modality": "somatic",
+"goal_tags": [
+"tension-release",
+"relaxation"
+],
+"stress_range": {
+"min": 6,
+"max": 8
+},
+"trigger_case": "Muscle rigidity in neck/shoulders after a difficult airway procedure",
+"steps": [
+"Drop shoulders away from ears intentionally.",
+"Rotate neck slowly in circles.",
+"Shake hands vigorously as if flicking water off.",
+"Take one deep 'sighing' breath."
+],
+"target_outcome": "Releases static muscle tension accumulated during high-focus tasks."
+},
+{
+"id": 20,
+"name": "The 'Resource Audit' Check",
+"duration_min": 3,
+"context": "anxiety",
+"modality": "cognitive",
+"goal_tags": [
+"problem-solving",
+"perspective"
+],
+"stress_range": {
+"min": 7,
+"max": 9
+},
+"trigger_case": "Feeling completely overwhelmed by patient load/acuity",
+"steps": [
+"List current resources: 'I have 2 techs, 1 charge nurse, and these meds.'",
+"List immediate threats: 'Patient A is unstable.'",
+"Match resources to threats explicitly.",
+"Identify the 'uncovered' risk and report it to supervisor immediately."
+],
+"target_outcome": "Moves from vague feeling of panic to concrete resource management."
+},
+{
+"id": 21,
+"name": "Pediatric Loss Candle",
+"duration_min": 5,
+"context": "grief",
+"modality": "ritual",
+"goal_tags": [
+"mourning",
+"solidarity"
+],
+"stress_range": {
+"min": 8,
+"max": 10
+},
+"trigger_case": "Death of a child in ER or PICU",
+"steps": [
+"Team gathers for a brief huddle.",
+"Turn on an electric candle (or specific light) at the station.",
+"Acknowledge: 'This creates a shadow on our shift.'",
+"Allow the light to stay on for the shift as a silent memorial.",
+"Turn it off at shift end to symbolize 'leaving it here'."
+],
+"target_outcome": "Provides a container for heavy grief while continuing to work."
+},
+{
+"id": 22,
+"name": "Compassion Fatigue Body Scan",
+"duration_min": 3,
+"context": "fatigue",
+"modality": "meditation",
+"goal_tags": [
+"awareness",
+"self-care"
+],
+"stress_range": {
+"min": 3,
+"max": 6
+},
+"trigger_case": "Feeling numb or cynical towards patients",
+"steps": [
+"Sit in a quiet chair.",
+"Scan body from toes to head for tension.",
+"Ask: 'What does my body need right now?' (Water, pee, silence, food).",
+"Commit to meeting that one need within the next hour."
+],
+"target_outcome": "Reconnects the provider with their own humanity/needs."
+},
+{
+"id": 23,
+"name": "Peer Check-Six",
+"duration_min": 1,
+"context": "conflict",
+"modality": "social",
+"goal_tags": [
+"support",
+"safety"
+],
+"stress_range": {
+"min": 4,
+"max": 7
+},
+"trigger_case": "Noticing a colleague becoming irritable or unsafe",
+"steps": [
+"Approach colleague discretely.",
+"Use code phrase: 'Checking your six. You good?'",
+"Offer a specific small help: 'Can I hang that bag for you?'",
+"Accept their response without pushing."
+],
+"target_outcome": "Non-intrusive way to offer support without questioning competence."
+},
+{
+"id": 24,
+"name": "Isolation Room Connection",
+"duration_min": 2,
+"context": "fatigue",
+"modality": "social",
+"goal_tags": [
+"connection",
+"humanity"
+],
+"stress_range": {
+"min": 3,
+"max": 5
+},
+"trigger_case": "Feeling isolated while treating infectious patients in PPE for hours",
+"steps": [
+"Write your name and a smiley face/hobby on your PPE gown.",
+"Make intentional eye contact with the patient.",
+"Share one non-medical sentence: 'I love this weather/music.'",
+"Acknowledge the person behind the disease."
+],
+"target_outcome": "Reduces the dehumanizing effect of full PPE/isolation."
+},
+{
+"id": 25,
+"name": "Family Confrontation Cool-Down",
+"duration_min": 3,
+"context": "conflict",
+"modality": "breathing",
+"goal_tags": [
+"de-escalation",
+"regulation"
+],
+"stress_range": {
+"min": 6,
+"max": 8
+},
+"trigger_case": "After being yelled at by a frustrated family member",
+"steps": [
+"Retreat to a 'safe zone' (med room/break room).",
+"Vent physically: Squeeze a stress ball or clench/unclench fists.",
+"Vent verbally (privately): Say 'That was really hard' out loud.",
+"Drink water to cool literal body temperature."
+],
+"target_outcome": "Discharges anger safely away from patients and family."
+},
+{
+"id": 26,
+"name": "The 'Error' Forgiveness Script",
+"duration_min": 5,
+"context": "trauma",
+"modality": "writing",
+"goal_tags": [
+"forgiveness",
+"learning"
+],
+"stress_range": {
+"min": 7,
+"max": 9
+},
+"trigger_case": "Realizing a medical error was made (medication/procedure)",
+"steps": [
+"Write: 'I made a mistake. It was [X].'",
+"Write: 'I am human and fallible.'",
+"Write: 'I will report this to prevent recurrence.'",
+"Write: 'My worth is not defined by this single moment.'"
+],
+"target_outcome": "Moves from shame/hiding to accountability/growth."
+},
+{
+"id": 27,
+"name": "Shift Change 'Shedding'",
+"duration_min": 2,
+"context": "fatigue",
+"modality": "visualization",
+"goal_tags": [
+"transition",
+"rest"
+],
+"stress_range": {
+"min": 2,
+"max": 4
+},
+"trigger_case": "Changing out of scrubs at the hospital or home",
+"steps": [
+"As you remove scrubs, imagine peeling off the 'clinician' layer.",
+"Put on street clothes/pajamas, imagining putting on 'civilian' self.",
+"Wash face with warm water.",
+"Say: 'I am just [Name] now.'"
+],
+"target_outcome": "Ritualizes the return to personal life to aid sleep/relaxation."
+},
+{
+"id": 28,
+"name": "The 'End of Week' Victory Log",
+"duration_min": 5,
+"context": "fatigue",
+"modality": "journaling",
+"goal_tags": [
+"gratitude",
+"morale"
+],
+"stress_range": {
+"min": 1,
+"max": 4
+},
+"trigger_case": "Feeling like the week was a blur of failures/stress",
+"steps": [
+"Open phone notes app.",
+"List 3 patients you helped (even in small ways).",
+"List 1 interaction with a colleague that made you smile.",
+"Read it once, then close it."
+],
+"target_outcome": "Combats negativity bias by proactively recording wins."
+},
+{
+"id": 29,
+"name": "Palliative Transition Pause",
+"duration_min": 1,
+"context": "grief",
+"modality": "cognitive",
+"goal_tags": [
+"reframing",
+"purpose"
+],
+"stress_range": {
+"min": 4,
+"max": 6
+},
+"trigger_case": "Shifting care goals from 'cure' to 'comfort' (withdrawal of care)",
+"steps": [
+"Acknowledge the shift: 'We are changing lanes now.'",
+"Define new goal: 'Success is now a peaceful, pain-free passing.'",
+"Release the burden of 'saving' life.",
+"Focus on symptom management as the primary skill."
+],
+"target_outcome": "Aligns emotional expectations with the new clinical reality."
+},
+{
+"id": 30,
+"name": "The 'Data Dump' Huddle",
+"duration_min": 5,
+"context": "conflict",
+"modality": "group",
+"goal_tags": [
+"clarity",
+"teamwork"
+],
+"stress_range": {
+"min": 5,
+"max": 7
+},
+"trigger_case": "Confusion and chaos during a multi-patient trauma arrival",
+"steps": [
+"Leader calls 'Stop. Listen.'",
+"Everyone freezes for 10 seconds.",
+"Leader summarizes: 'We have 3 patients. A goes to Bay 1, B to Bay 2.'",
+"Team confirms understanding.",
+"Resume work."
+],
+"target_outcome": "Resets shared mental model to prevent errors and arguments."
 }
 ]

@@ -1,0 +1,49 @@
+services:
+  frontend:
+    build: ./frontend
+    container_name: rerhythm-frontend
+    restart: unless-stopped
+    # No need to expose ports - accessed via nginx only
+    networks:
+      - app-network
+
+  backend:
+    build: ./backend
+    container_name: rerhythm-backend
+    restart: unless-stopped
+    # No need to expose ports - accessed via nginx only
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - app-network
+
+  nginx:
+    build: ./nginx
+    container_name: rerhythm-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Map Let's Encrypt certificates from host to container
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+  # Optional: Certbot container to renew certs automatically
+  certbot:
+    image: certbot/certbot
+    container_name: rerhythm-certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # Run a check every 12 hours
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+networks:
+  app-network:
+    driver: bridge

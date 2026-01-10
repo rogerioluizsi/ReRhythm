@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { Shield, Clock, Battery, Moon, Thermometer, ArrowRight, Check, Sparkles, AlertCircle } from "lucide-react";
+import { Shield, Clock, Battery, Moon, Thermometer, ArrowRight, Check, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { checkinAnalyze, libraryGetInterventions, CheckInResponse, Intervention } from "@/services/api";
+import { checkinAnalyze, libraryCompleteIntervention, CheckInResponse, Intervention, libraryGetInterventions } from "@/services/api";
+import { InterventionCard, InterventionDialog } from "@/components/interventions";
 
 type CheckInStep = "stress" | "capacity" | "sleep" | "illness" | "notes" | "complete";
 
@@ -23,6 +24,8 @@ export default function CheckIn() {
   const [analysisResult, setAnalysisResult] = useState<CheckInResponse | null>(null);
   const [interventions, setInterventions] = useState<Intervention[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [selectedIntervention, setSelectedIntervention] = useState<Intervention | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const steps: { key: CheckInStep; label: string; icon: typeof Clock }[] = [
     { key: "stress", label: "Stress", icon: Clock },
@@ -86,7 +89,6 @@ export default function CheckIn() {
 
   const handleGetSupport = async () => {
     if (!user) {
-      // In a real app, you might suggest logging in
       console.error("User not logged in");
       return;
     }
@@ -103,26 +105,58 @@ export default function CheckIn() {
       setAnalysisResult(response);
 
       if (response.recommended_intervention_ids) {
-        // Backend returns comma-separated string of IDs
-        const ids = response.recommended_intervention_ids
-          .split(',')
-          .map(id => parseInt(id.trim()))
-          .filter(id => !isNaN(id));
+        let ids: number[] = [];
+        const rawIds = response.recommended_intervention_ids;
+        
+        if (Array.isArray(rawIds)) {
+          ids = rawIds.map(id => parseInt(id)).filter(id => !isNaN(id));
+        } else if (typeof rawIds === 'string') {
+          ids = rawIds.split(',')
+            .map(id => parseInt(id.trim()))
+            .filter(id => !isNaN(id));
+        }
 
         if (ids.length > 0) {
-          const intResponse = await libraryGetInterventions({ intervention_ids: ids });
+          const intResponse = await libraryGetInterventions({ 
+            intervention_ids: ids,
+            user_id: user.user_id 
+          });
           setInterventions(intResponse.interventions);
         } else {
-            setInterventions([]);
+          setInterventions([]);
         }
       }
 
       setShowResults(true);
     } catch (error) {
       console.error("Error analyzing check-in:", error);
-      // Could set an error state here
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleCardClick = (intervention: Intervention) => {
+    setSelectedIntervention(intervention);
+    setDialogOpen(true);
+  };
+
+  const handleComplete = async (intervention: Intervention) => {
+    if (!user) return;
+    try {
+      await libraryCompleteIntervention({
+        user_id: user.user_id,
+        intervention_id: String(intervention.id),
+      });
+      // Update the intervention in the list to reflect completion
+      setInterventions(prev => 
+        prev.map(int => 
+          int.id === intervention.id 
+            ? { ...int, times_completed: (int.times_completed || 0) + 1 }
+            : int
+        )
+      );
+    } catch (error) {
+      console.error("Failed to complete intervention:", error);
     }
   };
 
@@ -155,38 +189,31 @@ export default function CheckIn() {
                 
                 {/* Interventions Grid */}
                 {interventions.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {interventions.map((intervention) => (
-                      <Card key={intervention.id} className="hover:shadow-lg transition-shadow">
-                        <CardHeader>
-                          <div className="flex justify-between items-start">
-                            <CardTitle>{intervention.name}</CardTitle>
-                            <span className="text-xs px-2 py-1 rounded-full bg-secondary text-secondary-foreground">
-                              {intervention.category}
-                            </span>
-                          </div>
-                          <CardDescription className="flex items-center gap-2 mt-2">
-                             <Clock className="h-3 w-3" /> {intervention.estimated_time}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
-                            {intervention.trigger_case}
-                          </p>
-                          <p className="text-sm font-medium">Outcome: {intervention.target_outcome}</p>
-                        </CardContent>
-                      </Card>
+                      <InterventionCard
+                        key={intervention.id}
+                        intervention={intervention}
+                        onClick={handleCardClick}
+                      />
                     ))}
                   </div>
                 ) : (
-                    <Card className="p-8 text-center text-muted-foreground">
-                        <p>No specific interventions found, but practicing general mindfulness is always helpful.</p>
-                    </Card>
+                  <Card className="p-8 text-center text-muted-foreground">
+                    <p>No specific interventions found, but practicing general mindfulness is always helpful.</p>
+                  </Card>
                 )}
                 
               </div>
             </div>
           </main>
+
+          <InterventionDialog
+            intervention={selectedIntervention}
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+            onComplete={handleComplete}
+          />
         </div>
       );
     }

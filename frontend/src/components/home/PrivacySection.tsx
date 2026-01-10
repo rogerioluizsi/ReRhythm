@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Shield, Trash2, Eye, Lock } from "lucide-react";
 
 export function PrivacySection() {

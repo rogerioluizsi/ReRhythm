@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -133,6 +133,48 @@
 }
 
 @layer utilities {
+  .font-readable {
+    font-family: 'Atkinson Hyperlegible', 'DM Sans', sans-serif;
+    letter-spacing: 0.01em;
+  }
+
+  .chat-markdown {
+    line-height: 1.6;
+  }
+
+  .chat-markdown :where(p) {
+    margin-bottom: 0.65rem;
+  }
+
+  .chat-markdown :where(ul, ol) {
+    padding-left: 1.25rem;
+    margin-bottom: 0.75rem;
+    list-style-position: outside;
+  }
+
+  .chat-markdown :where(li) {
+    margin-bottom: 0.25rem;
+  }
+
+  .chat-markdown :where(code) {
+    font-size: 0.85em;
+    font-family: 'DM Sans', monospace;
+    background-color: hsl(var(--muted) / 0.8);
+    border-radius: 0.35rem;
+    padding: 0.1rem 0.35rem;
+  }
+
+  .chat-markdown :where(a) {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    color: hsl(var(--primary));
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
   .text-balance {
     text-wrap: balance;
   }

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 
@@ -22,13 +22,27 @@ class CompleteInterventionRequest(BaseModel):
 class CompleteInterventionResponse(BaseModel):
     success: bool
 
+class StressRange(BaseModel):
+    min: int
+    max: int
+
 class InterventionResponse(BaseModel):
     id: int
     name: str
-    description: str
-    category: str
+    duration_min: int
+    context: str
+    modality: str
+    goal_tags: List[str]
+    stress_range: StressRange
+    trigger_case: str
+    steps: List[str]
+    target_outcome: str
     times_completed: Optional[int] = None
     last_completed: Optional[datetime] = None
+
+class InterventionsListResponse(BaseModel):
+    count: int
+    interventions: List[InterventionResponse]
 
 def load_interventions():
     """Load interventions from JSON file"""
@@ -36,7 +50,7 @@ def load_interventions():
         return json.load(f)
 
 
-@router.get("/interventions")
+@router.get("/interventions", response_model=InterventionsListResponse)
 def get_interventions(
     intervention_ids: Optional[List[int]] = Query(None, description="List of intervention IDs to retrieve"),
     user_id: Optional[int] = Query(None, description="User ID to filter interventions they have completed"),
@@ -81,8 +95,15 @@ def get_interventions(
         for intervention in all_interventions:
             iid = str(intervention["id"])
             if iid in completion_data:
-                intervention["times_completed"] = completion_data[iid]["times_completed"]
-                intervention["last_completed"] = completion_data[iid]["last_completed"]
+                last_completed = completion_data[iid]["last_completed"]
+                times_completed = completion_data[iid]["times_completed"]
+                
+                # Check if last completion was more than 24 hours ago
+                if last_completed and (datetime.utcnow() - last_completed > timedelta(hours=24)):
+                    times_completed = 0
+                
+                intervention["times_completed"] = times_completed
+                intervention["last_completed"] = last_completed
             else:
                 intervention["times_completed"] = None
                 intervention["last_completed"] = None
@@ -113,8 +134,14 @@ def complete_intervention(
     current_time = datetime.utcnow()
     
     if user_intervention:
-        # Update existing record
-        user_intervention.times_completed += 1
+        # Check if 24 hours have passed since last completion
+        if user_intervention.last_completed_at and (current_time - user_intervention.last_completed_at > timedelta(hours=24)):
+            # Reset count for new 24h period
+            user_intervention.times_completed = 1
+        else:
+            # Increment within 24h period
+            user_intervention.times_completed += 1
+            
         user_intervention.last_completed_at = current_time
     else:
         # Create new record

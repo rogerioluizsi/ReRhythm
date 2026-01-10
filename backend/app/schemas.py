@@ -19,6 +19,22 @@ class LoginResponse(BaseModel):
         from_attributes = True
 
 
+class RegisterRequest(BaseModel):
+    email: EmailStr
+    password: str
+    repeat_password: str
+    device_id: str
+
+
+class RegisterResponse(BaseModel):
+    token: str
+    user_id: int
+    is_anonymous: bool
+
+    class Config:
+        from_attributes = True
+
+
 class AccountWipeRequest(BaseModel):
     user_id: int
 
@@ -71,6 +87,7 @@ class WearableDataSummary(BaseModel):
 class WearableCheckResponse(BaseModel):
     success: bool
     created_at: Optional[datetime] = None
+    data: Optional[dict] = None
 
     class Config:
         from_attributes = True

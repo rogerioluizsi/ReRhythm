@@ -7,7 +7,7 @@ from typing import List
 from app.database import get_db
 from app.models import User, WearableData
 from app.schemas import WearableDataRequest, WearableDataResponse, WearableDataSummary, WearableCheckResponse
-from app.utils.llm_utils import chat_completion
+from app.utils.llm_utils import structured_response
 
 router = APIRouter(prefix="/user/wearable", tags=["Wearable Data"])
 
@@ -38,7 +38,7 @@ def save_wearable_data(request: WearableDataRequest, db: Session = Depends(get_d
 
 
 @router.get("/view", response_model=List[WearableDataSummary])
-def view_wearable_data(user_id: int, db: Session = Depends(get_db)):
+def view_wearable_data(user_id: int, limit: int = 1, db: Session = Depends(get_db)):
     """
     Extract user wearable information from user's records.
     Uses LLM to summarize information based on user_id.
@@ -53,6 +53,7 @@ def view_wearable_data(user_id: int, db: Session = Depends(get_db)):
     wearable_records = db.query(WearableData)\
         .filter(WearableData.user_id == user_id)\
         .order_by(WearableData.created_at.desc())\
+        .limit(limit)\
         .all()
     
     if not wearable_records:
@@ -68,25 +69,41 @@ def view_wearable_data(user_id: int, db: Session = Depends(get_db)):
             
             # Create prompt for LLM to summarize
             prompt = f"""
-Summarize the following wearable data in a concise, user-friendly format (2-3 sentences max):
+Summarize the user's health insights from this wearable data in 2-3 sentences. This summary will be displayed alongside plots of the data, so avoid repeating raw numbers and focus on analysis, key patterns, and any notable concerns or trends.
 
 {json.dumps(wearable_json, indent=2)}
 
-Focus on key metrics like steps, heart rate, sleep, and any notable patterns or concerns.
+Highlight aspects like activity levels, heart rate trends, sleep quality, and overall well-being.
 """
             
-            # Call OpenAI API using shared utility
-            summary = chat_completion(
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant that summarizes health and wearable data in a clear, concise manner."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=150
-            )
+            # Define the response schema for structured output
+            response_schema = {
+                "type": "object",
+                "properties": {
+                    "summary": {
+                        "type": "string",
+                        "description": "A concise summary of the wearable data"
+                    }
+                },
+                "required": ["summary"],
+                "additionalProperties": False
+            }
             
-            if not summary:
-                summary = "No summary available"
+            try:
+                # Call OpenAI API with structured output using shared utility
+                result = structured_response(
+                    messages=[
+                        {"role": "system", "content": "You are a helpful assistant that summarizes health and wearable data in a clear, concise manner."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    schema=response_schema,
+                    schema_name="wearable_summary"
+                )
+                
+                summary = result["summary"]
+                
+            except Exception as e:
+                summary = f"Error generating summary: {str(e)}"
             
             summaries.append(WearableDataSummary(
                 date=record.created_at,  # type: ignore
@@ -128,6 +145,12 @@ def check_wearable_data(user_id: int, db: Session = Depends(get_db)):
         .first()
     
     if latest_wearable:
-        return WearableCheckResponse(success=True, created_at=latest_wearable.created_at)
+        data = None
+        try:
+            data = json.loads(latest_wearable.wearable_data) if isinstance(latest_wearable.wearable_data, str) else latest_wearable.wearable_data
+        except json.JSONDecodeError:
+            data = None
+
+        return WearableCheckResponse(success=True, created_at=latest_wearable.created_at, data=data)
     else:
-        return WearableCheckResponse(success=False, created_at=None)
+        return WearableCheckResponse(success=False, created_at=None, data=None)

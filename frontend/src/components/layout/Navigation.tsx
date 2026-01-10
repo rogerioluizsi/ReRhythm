@@ -12,10 +12,12 @@ import {
   Activity,
   BookOpen,
   Settings,
+  LayoutDashboard,
 } from "lucide-react";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
+  { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { path: "/check-in", label: "Check-in", icon: Activity },
   { path: "/interventions", label: "Support", icon: Heart },
   { path: "/journal", label: "Journal", icon: BookOpen },

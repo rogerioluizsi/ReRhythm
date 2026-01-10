@@ -42,8 +42,10 @@ def analyze_check_in(request: CheckInRequest, db: Session = Depends(get_db)):
         {
             "id": str(intervention["id"]),
             "name": intervention["name"],
-            "category": intervention["category"],
-            "trigger_case": intervention["trigger_case"]
+            "context": intervention["context"],
+            "modality": intervention["modality"],
+            "trigger_case": intervention["trigger_case"],
+            "goal_tags": intervention.get("goal_tags", [])
         }
         for intervention in interventions
     ]

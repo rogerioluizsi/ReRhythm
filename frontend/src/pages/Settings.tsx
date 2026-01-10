@@ -4,10 +4,19 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { 
-  Shield, 
-  Trash2, 
-  Bell, 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { wearableSave } from "@/services/api";
+import {
+  Shield,
+  Trash2,
+  Bell,
   Moon,
   Watch,
   Download,
@@ -17,7 +26,12 @@ import {
   Volume2,
   VolumeX,
   Languages,
-  Timer
+  Timer,
+  RotateCcw,
+  Bluetooth,
+  Upload,
+  Database,
+  Loader2
 } from "lucide-react";
 
 type LanguageStyle = "performance" | "neutral" | "emotional";
@@ -57,6 +71,7 @@ function useUserPreferences() {
 }
 
 export default function Settings() {
+  const { user } = useAuth();
   const { 
     preferences, 
     updatePreference, 
@@ -67,8 +82,63 @@ export default function Settings() {
   const [notifications, setNotifications] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
   const [wearableConnected, setWearableConnected] = useState(false);
+  const [showWearableDialog, setShowWearableDialog] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [isLoadingMockData, setIsLoadingMockData] = useState(false);
+  const [mockDataSuccess, setMockDataSuccess] = useState(false);
+
+  const handleWearableToggle = (checked: boolean) => {
+    if (checked) {
+      setShowWearableDialog(true);
+    } else {
+      setWearableConnected(false);
+    }
+  };
+
+  const handleFindDevice = () => {
+    // Mock button - just show a message
+    alert("Scanning for nearby devices... (This is a mock feature)");
+  };
+
+  const handleUpload = () => {
+    // Mock upload - could be enhanced with file input later
+    alert("Upload functionality coming soon!");
+  };
+
+  const handleCreateMockData = async () => {
+    if (!user?.user_id) {
+      alert("User not authenticated");
+      return;
+    }
+
+    setIsLoadingMockData(true);
+    try {
+      // Fetch the mock data from public folder
+      const response = await fetch('/wearable_example.json');
+      const mockData = await response.json();
+      
+      // Save to database via API
+      await wearableSave({
+        user_id: user.user_id,
+        wearable_data: JSON.stringify(mockData)
+      });
+
+      setWearableConnected(true);
+      setMockDataSuccess(true);
+      
+      // Show success message briefly, then close dialog
+      setTimeout(() => {
+        setShowWearableDialog(false);
+        setMockDataSuccess(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to create mock data:", error);
+      alert(`Failed to save mock data: ${error}`);
+    } finally {
+      setIsLoadingMockData(false);
+    }
+  };
 
   const handleDeleteAll = () => {
     localStorage.clear();
@@ -387,8 +457,32 @@ export default function Settings() {
                       </div>
                       <Switch
                         checked={wearableConnected}
-                        onCheckedChange={setWearableConnected}
+                        onCheckedChange={handleWearableToggle}
                       />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Reset Preferences */}
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <RotateCcw className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">Reset Preferences</p>
+                          <p className="text-sm text-muted-foreground">Restore default language and timing settings</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={resetToDefaults}
+                      >
+                        Reset
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -483,6 +577,104 @@ export default function Settings() {
           </div>
         </div>
       </main>
+
+      {/* Wearable Connection Dialog */}
+      <Dialog open={showWearableDialog} onOpenChange={setShowWearableDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Connect Wearable Device</DialogTitle>
+            <DialogDescription>
+              Choose how you'd like to sync your wearable data
+            </DialogDescription>
+          </DialogHeader>
+          
+          {mockDataSuccess ? (
+            <div className="flex flex-col items-center justify-center py-8 space-y-3">
+              <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center">
+                <Check className="h-8 w-8 text-success" />
+              </div>
+              <p className="text-lg font-medium text-foreground">Mock Data Created!</p>
+              <p className="text-sm text-muted-foreground text-center">
+                Sample wearable data has been saved to your profile
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3 py-4">
+              {/* Find Device */}
+              <Card className="hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleFindDevice}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Bluetooth className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">Find Device</p>
+                      <p className="text-sm text-muted-foreground">
+                        Scan for nearby wearables (soon)
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Upload */}
+              <Card className="hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleUpload}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Upload className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">Upload Data</p>
+                      <p className="text-sm text-muted-foreground">
+                        Import wearable data file
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Create Mock Data */}
+              <Card 
+                className="hover:bg-accent/50 transition-colors cursor-pointer" 
+                onClick={handleCreateMockData}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      {isLoadingMockData ? (
+                        <Loader2 className="h-6 w-6 text-primary animate-spin" />
+                      ) : (
+                        <Database className="h-6 w-6 text-primary" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">
+                        {isLoadingMockData ? "Creating Mock Data..." : "Create Mock Data"}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {isLoadingMockData 
+                          ? "Saving sample data to database" 
+                          : "Use sample wearable data for testing"}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          <div className="flex justify-end mt-4">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowWearableDialog(false)}
+              disabled={isLoadingMockData}
+            >
+              {mockDataSuccess ? "Close" : "Cancel"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import CheckIn from "./pages/CheckIn";
 import Interventions from "./pages/Interventions";
 import Journal from "./pages/Journal";
+import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -19,6 +20,7 @@ const App = () => (
         <Route element={<Layout />}>
           <Route path="/check-in" element={<CheckIn />} />
           <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/interventions" element={<Interventions />} />
             <Route path="/journal" element={<Journal />} />
           </Route>

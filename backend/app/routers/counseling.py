@@ -9,11 +9,11 @@ from app.schemas import (
     StartCounselingRequest, StartCounselingResponse,
     FollowUpRequest, FollowUpResponse
 )
-from app.utils.llm_utils import chat_completion
+from app.utils.llm_utils import structured_response
 
 router = APIRouter(prefix="/counseling", tags=["Journaling Counseling"])
 
-SYSTEM_PROMPT = """You are a supportive psychological counselor helping a user reflect on their journal entries.
+SYSTEM_PROMPT = """You are a supportive psychological counselor helping a user reflect on their journal entries in a live chat conversation.
 
 CRITICAL RULES:
 - NEVER use the user's name or any identifying information
@@ -23,8 +23,11 @@ CRITICAL RULES:
 - Provide gentle psychological support and insights
 - Ask thoughtful follow-up questions when appropriate
 - Keep responses concise but meaningful
+- use markdown formatting for better readability
 
 Your role is to help the user process their thoughts and feelings based on their journal entries."""
+
+CHAT_STYLE_PROMPT = """You are responding inside an active, back-and-forth chat with someone under stress. Keep every reply under 80 words, use two short paragraphs (blank line between), and end with one gentle, open question. Keep language simple, validating, and focused on immediate emotional grounding or coping micro-actions."""
 
 
 @router.post("/start", response_model=StartCounselingResponse)
@@ -55,16 +58,35 @@ def start_counseling(request: StartCounselingRequest, db: Session = Depends(get_
 
 {journals_context}
 
-Please provide initial supportive counseling based on these journal entries. Remember to never use names or identifying information."""
+Please provide an initial live-chat counseling reply (max 80 words, two short paragraphs) based on these journal entries. Remember to never use names or identifying information."""
 
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": CHAT_STYLE_PROMPT},
         {"role": "user", "content": user_message}
     ]
     
+    # Define the response schema for structured output
+    response_schema = {
+        "type": "object",
+        "properties": {
+            "counseling": {
+                "type": "string",
+                "description": "The supportive counseling response in markdown format"
+            }
+        },
+        "required": ["counseling"],
+        "additionalProperties": False
+    }
+    
     try:
         # Get LLM response
-        counseling = chat_completion(messages)
+        result = structured_response(
+            messages=messages,
+            schema=response_schema,
+            schema_name="counseling_response"
+        )
+        counseling = result["counseling"]
         
         # Save conversation
         conversation = Conversation(
@@ -102,13 +124,38 @@ def followup_counseling(request: FollowUpRequest, db: Session = Depends(get_db))
     
     # Load previous messages
     messages = json.loads(conversation.messages)
-    
+
+    # Ensure chat-style instructions exist once for ongoing conversations
+    if not any(
+        msg.get("role") == "system" and msg.get("content") == CHAT_STYLE_PROMPT
+        for msg in messages
+    ):
+        messages.insert(1, {"role": "system", "content": CHAT_STYLE_PROMPT})
+
     # Add new user message
     messages.append({"role": "user", "content": request.message})
     
+    # Define the response schema for structured output
+    response_schema = {
+        "type": "object",
+        "properties": {
+            "counseling": {
+                "type": "string",
+                "description": "The supportive counseling response"
+            }
+        },
+        "required": ["counseling"],
+        "additionalProperties": False
+    }
+    
     try:
         # Get LLM response
-        counseling = chat_completion(messages)
+        result = structured_response(
+            messages=messages,
+            schema=response_schema,
+            schema_name="counseling_response"
+        )
+        counseling = result["counseling"]
         
         # Update conversation with new messages
         messages.append({"role": "assistant", "content": counseling})

@@ -45,6 +45,8 @@ async function fetchJSON<T = any>(path: string, opts: RequestInit = {}): Promise
 // Authentication
 export type LoginRequest = { device_id: string; email?: string; password?: string };
 export type LoginResponse = { token: string; user_id: number; is_anonymous: boolean };
+export type RegisterRequest = { device_id: string; email: string; password: string; repeat_password: string };
+export type RegisterResponse = { token: string; user_id: number; is_anonymous: boolean };
 export type AccountWipeRequest = { user_id: number };
 export type AccountWipeResponse = { success: boolean; message: string };
 
@@ -61,20 +63,22 @@ export type FollowUpResponse = { counseling: string };
 
 // Check-in
 export type CheckInRequest = { user_id: number; check_in_data: string; wearable_data?: string };
-export type CheckInResponse = { sanitized_text: string; recommended_intervention_ids: string; ai_reasoning: string };
+export type CheckInResponse = { sanitized_text: string; recommended_intervention_ids: string | string[]; ai_reasoning: string };
 
 // Wearable
 export type WearableDataRequest = { user_id: number; wearable_data: string };
 export type WearableDataResponse = { success: boolean };
 export type WearableDataSummary = { date: string; wearable_data_summary: string };
-export type WearableCheckResponse = { success: boolean; created_at?: string | null };
+export type WearableCheckResponse = { success: boolean; created_at?: string | null; data?: any };
 
 // Interventions Library
 export type Intervention = {
   id: number;
   name: string;
-  category: string;
-  estimated_time: string;
+  duration_min: number;
+  context: string;
+  modality: string;
+  goal_tags: string[];
   stress_range: { min: number; max: number };
   trigger_case: string;
   steps: string[];
@@ -89,6 +93,13 @@ export type CompleteInterventionResponse = { success: boolean };
 /* ---------------- Authentication ---------------- */
 export async function authLogin(body: LoginRequest): Promise<LoginResponse> {
   return fetchJSON<LoginResponse>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function authRegister(body: RegisterRequest): Promise<RegisterResponse> {
+  return fetchJSON<RegisterResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -150,8 +161,8 @@ export async function wearableSave(body: WearableDataRequest): Promise<WearableD
   });
 }
 
-export async function wearableView(user_id: number): Promise<WearableDataSummary[]> {
-  return fetchJSON<WearableDataSummary[]>(`/user/wearable/view?user_id=${encodeURIComponent(String(user_id))}`);
+export async function wearableView(user_id: number, limit: number = 1): Promise<WearableDataSummary[]> {
+  return fetchJSON<WearableDataSummary[]>(`/user/wearable/view?user_id=${encodeURIComponent(String(user_id))}&limit=${limit}`);
 }
 
 export async function wearableCheck(user_id: number): Promise<WearableCheckResponse> {

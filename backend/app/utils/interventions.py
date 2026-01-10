@@ -25,18 +25,18 @@ def get_intervention_by_id(intervention_id: str) -> Optional[Dict]:
     return None
 
 
-def get_interventions_by_category(category: str) -> List[Dict]:
-    """Filter interventions by category"""
+def get_interventions_by_context(context: str) -> List[Dict]:
+    """Filter interventions by context"""
     interventions = load_interventions()
-    return [i for i in interventions if i.get('category', '').lower() == category.lower()]
+    return [i for i in interventions if i.get('context', '').lower() == context.lower()]
 
 
-def search_interventions(query: str = None, category: str = None) -> List[Dict]:
+def search_interventions(query: str = None, context: str = None) -> List[Dict]:
     """Search interventions with optional filters"""
     interventions = load_interventions()
     
-    if category:
-        interventions = [i for i in interventions if category.lower() in i.get('category', '').lower()]
+    if context:
+        interventions = [i for i in interventions if context.lower() in i.get('context', '').lower()]
     
     if query:
         interventions = [
@@ -54,8 +54,10 @@ def format_intervention_summary(intervention: Dict) -> Dict:
         "id": str(intervention.get('id')),
         "title": intervention.get('name'),
         "short_description": intervention.get('trigger_case'),
-        "duration_seconds": parse_duration(intervention.get('estimated_time', '0s')),
-        "category": intervention.get('category')
+        "duration_min": intervention.get('duration_min'),
+        "context": intervention.get('context'),
+        "modality": intervention.get('modality'),
+        "goal_tags": intervention.get('goal_tags', [])
     }
 
 
@@ -69,9 +71,11 @@ def format_intervention_detail(intervention: Dict) -> Dict:
         "title": intervention.get('name'),
         "full_instructions": full_instructions,
         "target_outcome": intervention.get('target_outcome'),
-        "estimated_time": intervention.get('estimated_time'),
-        "category": intervention.get('category'),
-        "stress_range": intervention.get('stress_range')
+        "duration_min": intervention.get('duration_min'),
+        "context": intervention.get('context'),
+        "modality": intervention.get('modality'),
+        "stress_range": intervention.get('stress_range'),
+        "goal_tags": intervention.get('goal_tags', [])
     }
 
 

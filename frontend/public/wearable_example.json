@@ -1,0 +1,60 @@
+{
+  "sync_timestamp": "2026-01-09T08:15:30Z",
+  "date": "2026-01-08",
+  "device_type": "smart_ring_v3",
+  "summary": {
+    "readiness_score": 85,
+    "sleep_score": 78,
+    "activity_score": 92,
+    "stress_resilience": "high"
+  },
+  "biometrics": {
+    "resting_heart_rate": 54,
+    "hrv_avg_ms": 42,
+    "hrv_max_ms": 68,
+    "skin_temp_deviation": -0.2,
+    "spo2_avg": 98,
+    "respiratory_rate": 14.5
+  },
+  "sleep": {
+    "total_sleep_duration_min": 435,
+    "time_in_bed_min": 480,
+    "efficiency_percent": 91,
+    "latency_min": 12,
+    "phases": {
+      "deep_sleep_min": 85,
+      "rem_sleep_min": 95,
+      "light_sleep_min": 255,
+      "awake_min": 45
+    },
+    "hypnogram_5min": [
+      4, 2, 2, 2, 1, 1, 1, 2, 2, 3, 3, 3, 2, 2, 4, 4, 2, 1, 1, 2, 2, 3, 3
+    ],
+    "lowest_heart_rate_timestamp": "2026-01-09T04:30:00Z"
+  },
+  "activity": {
+    "steps": 10452,
+    "cal_total": 2450,
+    "cal_active": 650,
+    "movement_intensity_avg": "moderate",
+    "inactivity_alerts": 1,
+    "workouts": [
+      {
+        "type": "running",
+        "start_time": "2026-01-08T18:30:00Z",
+        "duration_min": 45,
+        "cal_burn": 420,
+        "avg_hr": 145,
+        "max_hr": 172
+      }
+    ]
+  },
+  "trends": {
+    "hr_5min_samples": [
+      62, 60, 58, 57, 56, 55, 55, 58, 60, 56, 54, 54, 53, 53, 55, 59, 65, 62
+    ],
+    "hrv_5min_samples": [
+      30, 32, 35, 38, 40, 41, 42, 38, 35, 42, 45, 48, 50, 52, 45, 40, 35, 38
+    ]
+  }
+}

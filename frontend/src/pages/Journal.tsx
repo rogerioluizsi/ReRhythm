@@ -1,4 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type ComponentPropsWithoutRef } from "react";
+import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Navigation } from "@/components/layout/Navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +55,25 @@ const retentionOptions: { value: RetentionPeriod; label: string; description: st
   { value: "30_days", label: "30 days", description: "Auto-deletes in a month" },
   { value: "delete_manually", label: "Keep", description: "Delete manually when ready" },
 ];
+
+type ChatCodeBlockProps = ComponentPropsWithoutRef<"code"> & {
+  inline?: boolean;
+  node?: unknown;
+};
+
+const ChatCodeBlock = ({ node: _node, inline, className, children, ...props }: ChatCodeBlockProps) => (
+  <code
+    {...props}
+    className={cn(className, inline ? undefined : "block mt-2 rounded-md bg-background/40 px-3 py-2")}
+  >
+    {children}
+  </code>
+);
+
+const chatMarkdownComponents: Components = {
+  a: ({ node: _node, ...props }) => <a {...props} target="_blank" rel="noreferrer noopener" />,
+  code: ChatCodeBlock,
+};
 
 export default function Journal() {
   const { user } = useAuth();
@@ -298,13 +320,19 @@ export default function Journal() {
                                             </div>
                                         )}
                                         <div className={cn(
-                                            "rounded-lg px-4 py-2 max-w-[80%] text-sm",
-                                            msg.role === 'user' 
-                                                ? "bg-primary text-primary-foreground" 
+                                              "rounded-lg px-4 py-2 max-w-[80%] text-sm font-readable shadow-soft",
+                                              msg.role === 'user' 
+                                                ? "bg-primary/95 text-primary-foreground"
                                                 : "bg-muted text-foreground"
-                                        )}>
-                                            {msg.content}
-                                        </div>
+                                            )}>
+                                              <ReactMarkdown
+                                                className="chat-markdown"
+                                                remarkPlugins={[remarkGfm]}
+                                                components={chatMarkdownComponents}
+                                              >
+                                                {msg.content}
+                                              </ReactMarkdown>
+                                            </div>
                                          {msg.role === 'user' && (
                                             <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
                                                 <User className="h-4 w-4 text-secondary-foreground" />
