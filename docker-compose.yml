@@ -15,7 +15,7 @@ services:
     env_file:
       - ./backend/.env
     volumes:
-      - ./backend/app.db:/app/app.db
+      - backend_data:/app/data
     networks:
       - app-network
 
@@ -49,3 +49,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  backend_data:
