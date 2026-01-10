@@ -14,6 +14,8 @@ services:
     # No need to expose ports - accessed via nginx only
     env_file:
       - ./backend/.env
+    volumes:
+      - ./backend/app.db:/app/app.db
     networks:
       - app-network
 

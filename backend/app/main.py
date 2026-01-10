@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import engine, Base
+from app.database import engine
+from app.models import Base  # Import Base from models to ensure all models are registered
 from app.routers import auth, llm, wearable, journaling, counseling, library
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Create database tables (checkfirst=True is default, but explicit for clarity)
+# This safely handles the case where tables already exist
+Base.metadata.create_all(bind=engine, checkfirst=True)
 
 # Initialize FastAPI app
 app = FastAPI(
