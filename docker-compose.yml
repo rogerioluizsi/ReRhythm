@@ -14,8 +14,6 @@ services:
     # No need to expose ports - accessed via nginx only
     env_file:
       - ./backend/.env
-    environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
     networks:
       - app-network
 
