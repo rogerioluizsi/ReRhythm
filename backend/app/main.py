@@ -17,6 +17,10 @@ app = FastAPI(
 origins = [
     "http://localhost:5173",
     "http://localhost:3000",
+    "https://rerhythm.app",
+    "https://www.rerhythm.app",
+    "http://rerhythm.app",
+    "http://www.rerhythm.app",
 ]
 
 app.add_middleware(

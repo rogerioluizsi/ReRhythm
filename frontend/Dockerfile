@@ -8,6 +8,10 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+# Set production environment variable
+ENV VITE_API_BASE_URL=/api
+
 RUN npm run build
 
 # Production stage - serve with nginx
