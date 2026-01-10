@@ -3,7 +3,7 @@
 // Simple frontend API wrapper for DoraProject backend
 // Exports typed functions for each backend endpoint so components can import them directly.
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 let authToken: string | null = null;
 
 export function setAuthToken(token: string | null) {

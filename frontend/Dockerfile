@@ -9,7 +9,7 @@ RUN npm install
 
 COPY . .
 
-# Set production environment variable
+# Set API base URL for production (uses nginx proxy)
 ENV VITE_API_BASE_URL=/api
 
 RUN npm run build
