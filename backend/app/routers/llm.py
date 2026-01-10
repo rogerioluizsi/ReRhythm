@@ -60,9 +60,12 @@ Your task is to:
 You must respond with a JSON object containing:
 - sanitized_text: The check-in text with all sensitive data removed (MANDATORY)
 - recommended_intervention_ids: Array of intervention IDs (as strings)
-- ai_reasoning: Brief (1-3) rows explanation of why these interventions were selected
+- ai_reasoning: Brief (1-3) rows explanation of why these interventions were selected (never add ids here)
 
-Be concise, empathetic, and focus on practical recommendations."""
+Be concise, empathetic, and focus on practical recommendations.
+
+### Never shared Ids on the ai_reasoning field! Only share them on the recommended_intervention_ids field.
+"""
     
     # Build user message with context
     user_message = f"""Check-in data: {request.check_in_data}

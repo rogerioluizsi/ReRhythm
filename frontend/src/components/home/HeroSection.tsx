@@ -1,8 +1,26 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Shield, Heart, Clock, Eye } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
 
 export function HeroSection() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleAnonymousLogin = async () => {
+    setIsLoading(true);
+    try {
+      await login();
+      navigate("/check-in");
+    } catch (err) {
+      console.error("Anonymous login failed:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Ambient Background */}
@@ -37,12 +55,16 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
-            <Link to="/check-in">
-              <Button variant="glow" size="xl" className="gap-2">
-                <Heart className="h-5 w-5" />
-                Start Anonymous Check-in
-              </Button>
-            </Link>
+            <Button 
+              variant="glow" 
+              size="xl" 
+              className="gap-2"
+              onClick={handleAnonymousLogin}
+              disabled={isLoading}
+            >
+              <Heart className="h-5 w-5" />
+              {isLoading ? "Starting..." : "Start Anonymous Check-in"}
+            </Button>
             <Link to="/interventions">
               <Button variant="calm" size="xl" className="gap-2">
                 <Clock className="h-5 w-5" />
