@@ -12,7 +12,7 @@ import { InterventionCard, InterventionDialog } from "@/components/interventions
 type CheckInStep = "stress" | "capacity" | "sleep" | "illness" | "notes" | "complete";
 
 export default function CheckIn() {
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const [step, setStep] = useState<CheckInStep>("stress");
   const [stressLevel, setStressLevel] = useState([5]);
   const [capacityLevel, setCapacityLevel] = useState([5]);
@@ -88,17 +88,40 @@ export default function CheckIn() {
   };
 
   const handleGetSupport = async () => {
-    if (!user) {
-      console.error("User not logged in");
-      return;
+    setIsAnalyzing(true);
+    
+    let currentUser = user;
+    
+    // If user is not logged in, log in anonymously first
+    if (!currentUser) {
+      try {
+        await login();
+        // After login, we need to get the user from localStorage since state update is async
+        const userId = localStorage.getItem("user_id");
+        const token = localStorage.getItem("auth_token");
+        const isAnonymous = localStorage.getItem("is_anonymous") === "true";
+        
+        if (userId && token) {
+          currentUser = {
+            user_id: parseInt(userId),
+            token,
+            is_anonymous: isAnonymous
+          };
+        } else {
+          throw new Error("Failed to get user after anonymous login");
+        }
+      } catch (error) {
+        console.error("Anonymous login failed:", error);
+        setIsAnalyzing(false);
+        return;
+      }
     }
 
-    setIsAnalyzing(true);
     try {
       const checkInData = `Stress: ${stressLevel[0]}/10, Capacity: ${capacityLevel[0]}/10, Sleep Debt: ${sleepDebt[0]}/10, Illness: ${illnessSymptoms[0]}/10. Notes: ${notes}`;
       
       const response = await checkinAnalyze({
-        user_id: user.user_id,
+        user_id: currentUser.user_id,
         check_in_data: checkInData,
       });
 
@@ -119,7 +142,7 @@ export default function CheckIn() {
         if (ids.length > 0) {
           const intResponse = await libraryGetInterventions({ 
             intervention_ids: ids,
-            user_id: user.user_id 
+            user_id: currentUser.user_id 
           });
           setInterventions(intResponse.interventions);
         } else {
