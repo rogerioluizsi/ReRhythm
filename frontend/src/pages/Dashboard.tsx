@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { wearableCheck, wearableView } from "@/services/api";
+import { wearableCheck, wearableView, libraryGetInterventions, Intervention } from "@/services/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Activity, Moon, Heart, Brain, Zap, TrendingUp, RefreshCw } from "lucide-react";
-import { XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
+import { XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, AreaChart, Area, ReferenceLine, Label } from "recharts";
 
 // Types from JSON structure (user provided)
 interface HealthData {
@@ -73,6 +73,7 @@ export default function Dashboard() {
   const { user } = useAuthContext();
   const [healthData, setHealthData] = useState<HealthData | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
+  const [recentInterventions, setRecentInterventions] = useState<Intervention[]>([]);
   const [loading, setLoading] = useState(true);
   const [aiLoading, setAiLoading] = useState(false);
 
@@ -101,6 +102,20 @@ export default function Dashboard() {
             console.error("Failed to load AI analysis", e);
         } finally {
             setAiLoading(false);
+        }
+
+        // Fetch recent interventions
+        try {
+          const interventionsRes = await libraryGetInterventions({ user_id: userId });
+          if (interventionsRes && interventionsRes.interventions) {
+              const completed = interventionsRes.interventions
+                  .filter(i => i.last_completed)
+                  .sort((a, b) => new Date(b.last_completed!).getTime() - new Date(a.last_completed!).getTime())
+                  .slice(0, 2);
+              setRecentInterventions(completed);
+          }
+        } catch (e) {
+          console.error("Failed to load interventions", e);
         }
 
       } else {
@@ -250,6 +265,14 @@ export default function Dashboard() {
                         <YAxis domain={['auto', 'auto']} tick={{fontSize: 12}} />
                         <RechartsTooltip />
                         <Area type="monotone" dataKey="value" stroke="#ef4444" fillOpacity={1} fill="url(#colorHr)" strokeWidth={2} />
+                        {recentInterventions.map((intervention, idx) => {
+                             const xPos = Math.floor(hrData.length * ((idx + 1) / (recentInterventions.length + 1)));
+                             return (
+                                <ReferenceLine key={intervention.id} x={xPos} stroke="#3b82f6" strokeDasharray="3 3">
+                                    <Label value={intervention.name} position="insideTop" fill="#3b82f6" fontSize={12} />
+                                </ReferenceLine>
+                             )
+                        })}
                     </AreaChart>
                 </ResponsiveContainer>
             </CardContent>
