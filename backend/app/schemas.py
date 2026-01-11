@@ -147,6 +147,7 @@ class WipeAccountRequest(BaseModel):
 # Journaling Counseling schemas
 class StartCounselingRequest(BaseModel):
     user_id: int
+    journal_entry_ids: Optional[List[int]] = None  # If None or empty, no journal context
 
 
 class StartCounselingResponse(BaseModel):

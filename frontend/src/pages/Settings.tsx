@@ -17,7 +17,6 @@ import {
   Shield,
   Trash2,
   Bell,
-  Moon,
   Watch,
   Download,
   AlertTriangle,
@@ -80,7 +79,6 @@ export default function Settings() {
   } = useUserPreferences();
   
   const [notifications, setNotifications] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
   const [wearableConnected, setWearableConnected] = useState(false);
   const [showWearableDialog, setShowWearableDialog] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -414,27 +412,6 @@ export default function Settings() {
                       <Switch
                         checked={notifications}
                         onCheckedChange={setNotifications}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Dark Mode */}
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <Moon className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground">Dark Mode</p>
-                          <p className="text-sm text-muted-foreground">Easier on tired eyes</p>
-                        </div>
-                      </div>
-                      <Switch
-                        checked={darkMode}
-                        onCheckedChange={setDarkMode}
                       />
                     </div>
                   </CardContent>

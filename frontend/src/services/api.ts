@@ -56,7 +56,7 @@ export type SuccessResponse = { success: boolean; message?: string };
 export type JournalEntry = { id: number; date: string; journal: string; expires_at?: string | null };
 
 // Counseling
-export type StartCounselingRequest = { user_id: number };
+export type StartCounselingRequest = { user_id: number; journal_entry_ids?: number[] };
 export type StartCounselingResponse = { conversation_id: number; counseling: string };
 export type FollowUpRequest = { conversation_id: number; message: string };
 export type FollowUpResponse = { counseling: string };

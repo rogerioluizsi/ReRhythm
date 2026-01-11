@@ -73,7 +73,7 @@ Summarize the user's health insights from this wearable data in 2-3 sentences. T
 
 {json.dumps(wearable_json, indent=2)}
 
-Highlight aspects like activity levels, heart rate trends, sleep quality, and overall well-being.
+Highlight aspects like activity levels, heart rate variability, sleep quality, and overall well-being.
 """
             
             # Define the response schema for structured output

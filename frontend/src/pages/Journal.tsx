@@ -19,7 +19,9 @@ import {
   Send,
   Sparkles,
   User,
-  Bot
+  Bot,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,8 +40,16 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 
@@ -95,6 +105,12 @@ export default function Journal() {
   const [chatInput, setChatInput] = useState("");
   const [isChatLoading, setIsChatLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  // Entry selection dialog state
+  const [isSelectDialogOpen, setIsSelectDialogOpen] = useState(false);
+  const [selectedEntryIds, setSelectedEntryIds] = useState<Set<number>>(new Set());
+  const [expandedEntries, setExpandedEntries] = useState<Set<number>>(new Set());
+  const [expandedMainEntries, setExpandedMainEntries] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (user?.user_id) {
@@ -209,28 +225,96 @@ export default function Journal() {
   };
 
   // Chat handlers
-  const toggleChat = (open: boolean) => {
-    setIsChatOpen(open);
-    if (open && chatMessages.length === 0 && !conversationId) {
-        startChat();
+  const handleAskSupportClick = () => {
+    // If there are entries, show selection dialog first
+    if (entries.length > 0) {
+      setSelectedEntryIds(new Set(entries.map(e => e.id))); // Default to all selected
+      setExpandedEntries(new Set()); // Reset expanded state
+      setIsSelectDialogOpen(true);
+    } else {
+      // No entries, go directly to chat
+      openChatAndStart([]);
     }
   };
 
-  const startChat = async () => {
+  const handleSelectAll = () => {
+    setSelectedEntryIds(new Set(entries.map(e => e.id)));
+  };
+
+  const handleSelectNone = () => {
+    setSelectedEntryIds(new Set());
+  };
+
+  const handleToggleEntry = (id: number) => {
+    setSelectedEntryIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleToggleExpansion = (id: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the row click
+    setExpandedEntries(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleToggleMainExpansion = (id: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering any parent clicks
+    setExpandedMainEntries(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleStartWithSelection = () => {
+    setIsSelectDialogOpen(false);
+    openChatAndStart(Array.from(selectedEntryIds));
+  };
+
+  const openChatAndStart = (entryIds: number[]) => {
+    // Reset chat state for new conversation
+    setChatMessages([]);
+    setConversationId(null);
+    setChatInput("");
+    setIsChatOpen(true);
+    startChat(entryIds);
+  };
+
+  const toggleChat = (open: boolean) => {
+    setIsChatOpen(open);
+    // Don't auto-start when opening - it's controlled by the selection flow
+  };
+
+  const startChat = async (entryIds: number[]) => {
       if (!user?.user_id) return;
       try {
           setIsChatLoading(true);
-          const res = await counselingStart({ user_id: user.user_id });
+          const res = await counselingStart({ 
+            user_id: user.user_id,
+            journal_entry_ids: entryIds.length > 0 ? entryIds : undefined
+          });
           setConversationId(res.conversation_id);
           setChatMessages([{ role: 'assistant', content: res.counseling }]);
-      } catch (e: any) {
+      } catch (e: unknown) {
           console.error("Failed to start chat", e);
-          const msg = e.message || "Failed to start support chat.";
-          if (msg.includes("No journal entries")) {
-              setChatMessages([{ role: 'assistant', content: "I see you haven't written any journal entries yet. Please write an entry so I can help you reflect on it." }]);
-          } else {
-              toast({ variant: "destructive", title: "Error", description: "Failed to start support chat." });
-          }
+          toast({ variant: "destructive", title: "Error", description: "Failed to start support chat. Please try again." });
       } finally {
           setIsChatLoading(false);
       }
@@ -291,14 +375,103 @@ export default function Journal() {
                   Ephemeral by default. Write freely, entries auto-delete.
                 </p>
               </div>
-               <Sheet open={isChatOpen} onOpenChange={toggleChat}>
-                <SheetTrigger asChild>
-                    <Button variant="outline" className="gap-2">
+               <Button variant="outline" className="gap-2" onClick={handleAskSupportClick}>
                         <MessageCircle className="h-4 w-4" />
                         Ask Support
                     </Button>
-                </SheetTrigger>
-                <SheetContent className="flex flex-col h-full sm:max-w-md w-full">
+
+              {/* Entry Selection Dialog */}
+              <Dialog open={isSelectDialogOpen} onOpenChange={setIsSelectDialogOpen}>
+                <DialogContent className="sm:max-w-sm">
+                  <DialogHeader className="pb-2">
+                    <DialogTitle className="text-base">Select entries for support</DialogTitle>
+                  </DialogHeader>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{selectedEntryIds.size}/{entries.length} selected</span>
+                      <div className="flex gap-1">
+                        <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={handleSelectAll}>
+                          All
+                        </Button>
+                        <span>·</span>
+                        <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={handleSelectNone}>
+                          None
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <ScrollArea className="h-[240px] -mx-1">
+                      <div className="px-1 space-y-1">
+                        {entries.map((entry) => {
+                          const isExpanded = expandedEntries.has(entry.id);
+                          const isLongText = entry.journal.length > 100;
+                          const displayText = isLongText && !isExpanded 
+                            ? entry.journal.substring(0, 100) + "..."
+                            : entry.journal;
+                          
+                          return (
+                            <div
+                              key={entry.id}
+                              className={cn(
+                                "flex items-start gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors",
+                                selectedEntryIds.has(entry.id)
+                                  ? "bg-primary/10"
+                                  : "hover:bg-muted/50"
+                              )}
+                              onClick={() => handleToggleEntry(entry.id)}
+                            >
+                              <Checkbox
+                                checked={selectedEntryIds.has(entry.id)}
+                                className="h-3.5 w-3.5 mt-0.5 shrink-0"
+                              />
+                              <span className="text-xs text-muted-foreground w-14 shrink-0">
+                                {formatDate(entry.date)}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <span className="text-sm block">
+                                  {displayText}
+                                </span>
+                                {isLongText && (
+                                  <button
+                                    onClick={(e) => handleToggleExpansion(entry.id, e)}
+                                    className="flex items-center gap-1 mt-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                                  >
+                                    {isExpanded ? (
+                                      <>
+                                        <ChevronUp className="h-3 w-3" />
+                                        Show less
+                                      </>
+                                    ) : (
+                                      <>
+                                        <ChevronDown className="h-3 w-3" />
+                                        Show more
+                                      </>
+                                    )}
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </ScrollArea>
+                  </div>
+                  
+                  <DialogFooter className="gap-2 sm:gap-0">
+                    <Button variant="ghost" size="sm" onClick={() => setIsSelectDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button size="sm" onClick={handleStartWithSelection}>
+                      Start Chat
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              {/* Chat Sheet */}
+              <Sheet open={isChatOpen} onOpenChange={toggleChat}>
+                <SheetContent className="flex flex-col h-full w-full sm:max-w-[540px]">
                     <SheetHeader>
                         <SheetTitle className="flex items-center gap-2">
                             <Sparkles className="h-5 w-5 text-primary" />
@@ -361,12 +534,12 @@ export default function Journal() {
                                 value={chatInput} 
                                 onChange={(e) => setChatInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                disabled={isChatLoading || (chatMessages.length === 0 && !isChatLoading && !conversationId)}
+                                disabled={isChatLoading || !conversationId}
                             />
                             <Button 
                                 size="icon" 
                                 onClick={sendChatMessage} 
-                                disabled={!chatInput.trim() || isChatLoading}
+                                disabled={!chatInput.trim() || isChatLoading || !conversationId}
                             >
                                 <Send className="h-4 w-4" />
                             </Button>
@@ -493,35 +666,65 @@ export default function Journal() {
               </Card>
             ) : (
               <div className="space-y-4">
-                {entries.map((entry) => (
-                  <Card key={entry.id} variant="default" className="group hover:border-primary/20 transition-colors">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between gap-4 mb-3">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4" />
-                          <span>{formatDate(entry.date)} at {formatTime(entry.date)}</span>
+                {entries.map((entry) => {
+                  const isExpanded = expandedMainEntries.has(entry.id);
+                  // Approximate 3 lines of text (considering line breaks and average characters per line)
+                  const lines = entry.journal.split('\n');
+                  const isLongText = lines.length > 3 || entry.journal.length > 200;
+                  const displayText = isLongText && !isExpanded 
+                    ? lines.slice(0, 3).join('\n') + (lines.length > 3 || entry.journal.length > 200 ? '\n...' : '')
+                    : entry.journal;
+                  
+                  return (
+                    <Card key={entry.id} variant="default" className="group hover:border-primary/20 transition-colors">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between gap-4 mb-3">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Clock className="h-4 w-4" />
+                            <span>{formatDate(entry.date)} at {formatTime(entry.date)}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {entry.expires_at && (
+                              <span className="text-xs text-muted-foreground flex items-center gap-1 bg-muted px-2 py-1 rounded-full">
+                                <Timer className="h-3 w-3" />
+                                Expires {formatDate(entry.expires_at)}
+                              </span>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => handleDelete(entry.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {entry.expires_at && (
-                            <span className="text-xs text-muted-foreground flex items-center gap-1 bg-muted px-2 py-1 rounded-full">
-                              <Timer className="h-3 w-3" />
-                              Expires {formatDate(entry.expires_at)}
-                            </span>
+                        <div className="space-y-2">
+                          <p className="text-foreground whitespace-pre-wrap leading-relaxed">{displayText}</p>
+                          {isLongText && (
+                            <button
+                              onClick={(e) => handleToggleMainExpansion(entry.id, e)}
+                              className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              {isExpanded ? (
+                                <>
+                                  <ChevronUp className="h-4 w-4" />
+                                  Show less
+                                </>
+                              ) : (
+                                <>
+                                  <ChevronDown className="h-4 w-4" />
+                                  Show more
+                                </>
+                              )}
+                            </button>
                           )}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => handleDelete(entry.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
                         </div>
-                      </div>
-                      <p className="text-foreground whitespace-pre-wrap leading-relaxed">{entry.journal}</p>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </div>

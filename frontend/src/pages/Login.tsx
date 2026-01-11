@@ -87,74 +87,76 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <div className="container mx-auto px-4 pt-24 pb-12 flex justify-center items-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Welcome Back</CardTitle>
-            <CardDescription>Sign in to your account or continue anonymously</CardDescription>
+      <div className="container mx-auto px-6 pt-28 pb-16 flex justify-center items-center">
+        <Card className="w-full max-w-lg p-4">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-3xl">Welcome Back</CardTitle>
+            <CardDescription className="text-lg">Sign in to your account or continue anonymously</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="email" className="text-base font-medium">Email</Label>
                 <Input 
                   id="email" 
                   type="email" 
                   placeholder="name@example.com" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="h-12 text-base px-4"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+              <div className="space-y-3">
+                <Label htmlFor="password" className="text-base font-medium">Password</Label>
                 <Input 
                   id="password" 
                   type="password" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="h-12 text-base px-4"
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoginLoading || isAnonymousLoading}>
+              {error && <p className="text-base text-red-500">{error}</p>}
+              <Button type="submit" className="w-full h-12 text-lg font-medium" disabled={isLoginLoading || isAnonymousLoading}>
                 {isLoginLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
 
-            <div className="relative my-6">
+            <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or</span>
+              <div className="relative flex justify-center text-sm uppercase">
+                <span className="bg-background px-3 text-muted-foreground">Or</span>
               </div>
             </div>
 
             <Button 
                 variant="outline" 
-                className="w-full" 
+                className="w-full h-12 text-lg font-medium" 
                 onClick={handleAnonymousLogin}
                 disabled={isLoginLoading || isAnonymousLoading}
             >
               {isAnonymousLoading ? "Starting..." : "Start Anonymous Session"}
             </Button>
 
-            <div className="mt-4 text-center">
+            <div className="mt-6 text-center">
               <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="link" className="text-sm">
+                  <Button variant="link" className="text-base">
                     Don't have an account? Create one
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Create Account</DialogTitle>
-                    <DialogDescription>
+                <DialogContent className="sm:max-w-lg p-6">
+                  <DialogHeader className="space-y-3">
+                    <DialogTitle className="text-2xl">Create Account</DialogTitle>
+                    <DialogDescription className="text-base">
                       Create a new account to save your progress and access your data from any device.
                     </DialogDescription>
                   </DialogHeader>
-                  <form onSubmit={handleRegister} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="register-email">Email</Label>
+                  <form onSubmit={handleRegister} className="space-y-6 mt-4">
+                    <div className="space-y-3">
+                      <Label htmlFor="register-email" className="text-base font-medium">Email</Label>
                       <Input 
                         id="register-email" 
                         type="email" 
@@ -162,10 +164,11 @@ export default function Login() {
                         value={registerEmail}
                         onChange={(e) => setRegisterEmail(e.target.value)}
                         required
+                        className="h-12 text-base px-4"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="register-password">Password</Label>
+                    <div className="space-y-3">
+                      <Label htmlFor="register-password" className="text-base font-medium">Password</Label>
                       <Input 
                         id="register-password" 
                         type="password" 
@@ -173,10 +176,11 @@ export default function Login() {
                         onChange={(e) => setRegisterPassword(e.target.value)}
                         required
                         minLength={6}
+                        className="h-12 text-base px-4"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="register-repeat-password">Repeat Password</Label>
+                    <div className="space-y-3">
+                      <Label htmlFor="register-repeat-password" className="text-base font-medium">Repeat Password</Label>
                       <Input 
                         id="register-repeat-password" 
                         type="password" 
@@ -184,10 +188,11 @@ export default function Login() {
                         onChange={(e) => setRegisterRepeatPassword(e.target.value)}
                         required
                         minLength={6}
+                        className="h-12 text-base px-4"
                       />
                     </div>
-                    {registerError && <p className="text-sm text-red-500">{registerError}</p>}
-                    <Button type="submit" className="w-full" disabled={isRegisterLoading}>
+                    {registerError && <p className="text-base text-red-500">{registerError}</p>}
+                    <Button type="submit" className="w-full h-12 text-lg font-medium" disabled={isRegisterLoading}>
                       {isRegisterLoading ? "Creating Account..." : "Create Account"}
                     </Button>
                   </form>

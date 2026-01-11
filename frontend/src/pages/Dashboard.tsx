@@ -233,7 +233,7 @@ export default function Dashboard() {
         <Card className="lg:col-span-2">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" /> Heart Rate Trend (Last few hours)
+                    <TrendingUp className="h-5 w-5" /> Heart Rate Variability (Last few hours)
                 </CardTitle>
             </CardHeader>
             <CardContent className="h-[250px]">
